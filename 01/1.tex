@@ -1,0 +1,387 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=22mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{
+  pdftitle={Prescribed even cycle lengths in cubic graphs},
+  pdfsubject={A girth-dependent sufficient condition, with a full proof and a power-of-two corollary}
+}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\head}{head}
+\DeclareMathOperator{\tail}{tail}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0pt}
+\allowdisplaybreaks[1]
+\raggedbottom
+
+% Based on the nonbacktracking-walk counting argument in the supplied
+% draft cubic-girth-power-of-two.pdf and its previously expanded proof.
+% The target length is any admissible even integer, not necessarily
+% a power of two. No connectedness or expansion assumption is imposed.
+% The spectral-refinement and forest addenda are not used.
+% This file is standalone and can be compiled with pdflatex (two passes).
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Prescribed even cycle lengths in cubic graphs}
+\end{center}
+\vspace{0.2em}
+
+\begin{theorem}[Prescribed even lengths]\label{thm:main}
+Let $G$ be a finite simple cubic graph on $n\ge64$ vertices, with girth
+$g$, and put
+\[
+  h:=\left\lfloor\frac{g-1}{2}\right\rfloor.
+\]
+For every even integer $\ell$ satisfying
+\begin{equation}\label{eq:hypotheses}
+  \ell\ge 2\log_2 n+4
+  \qquad\text{and}\qquad
+  2^{2h}>\frac92\,n\ell^2,
+\end{equation}
+$G$ contains a simple cycle of length exactly $\ell$.
+Equivalently, if $C(G)$ is the set of lengths of simple cycles in $G$,
+then
+\begin{equation}\label{eq:interval}
+  \left[\,2\log_2 n+4,\;
+    \frac{\sqrt2}{3}\,\frac{2^h}{\sqrt n}\,\right)
+  \cap 2\mathbb Z
+  \;\subseteq\; C(G).
+\end{equation}
+The graph need not be connected. All logarithms displayed with
+subscript $2$ are to base $2$.
+\end{theorem}
+
+\begin{proof}
+Fix an even integer $\ell$ satisfying \eqref{eq:hypotheses}.
+Write $G=(V,E)$ and $m:=|E|=3n/2$. A cycle is simple, and its length
+is its number of edges. The definition of $h$ gives
+\begin{equation}\label{eq:h}
+  1\le h<g,
+  \qquad g-2\le 2h<g.
+\end{equation}
+
+\medskip
+\noindent\textbf{1. Counting strictly nonbacktracking closed walks.}
+Let $\vec E$ be the set of $2m=3n$ directed edges obtained by giving
+each edge of $G$ its two orientations. For $e\in\vec E$, let $\bar e$
+be its reverse. Define the nonbacktracking matrix $B$, with rows and
+columns indexed by $\vec E$, by
+\[
+  B_{e,f}:=
+  \begin{cases}
+    1,&\text{if }\head(e)=\tail(f)\text{ and }f\ne\bar e,\\
+    0,&\text{otherwise}.
+  \end{cases}
+\]
+Set $T_\ell:=\tr(B^\ell)$. Expanding the trace gives
+\begin{equation}\label{eq:trace-count}
+  T_\ell=
+  \sum_{e_0,\ldots,e_{\ell-1}\in\vec E}
+    \prod_{j=0}^{\ell-1}B_{e_j,e_{j+1}},
+  \qquad e_\ell:=e_0.
+\end{equation}
+Thus $T_\ell$ counts ordered directed-edge sequences describing
+closed walks of length $\ell$ with no immediate reversal, including
+between the last and first edges. These will be called
+\emph{rooted oriented strictly nonbacktracking closed walks}.
+The first directed edge fixes the root and the direction of traversal;
+sequences are not identified under rotation or reversal. In vertex
+notation, such a sequence is $(x_0,\ldots,x_\ell=x_0)$ with
+$x_{j-1}\ne x_{j+1}$ for every $j$ read modulo $\ell$.
+
+Let $A$ be the adjacency matrix of $G$. We will use the identity
+\begin{equation}\label{eq:bass}
+  \det(zI_{2m}-B)
+  =(z^2-1)^{m-n}\det\bigl(z^2I_n-zA+2I_n\bigr).
+\end{equation}
+This is the cubic case of the Ihara--Bass determinant identity;
+we derive it here.\footnote{For the general identity and an
+incidence-matrix proof, see M.~Kempton, \emph{Non-backtracking random walks
+and a weighted Ihara's theorem}, arXiv:1603.05553 (2016), \S\,2.4.}
+Define $n\times2m$ matrices $S,H$ and a $2m\times2m$ matrix $J$ by
+\[
+  S_{v,e}=\mathbf1_{\{v=\tail(e)\}},
+  \qquad
+  H_{v,e}=\mathbf1_{\{v=\head(e)\}},
+  \qquad
+  J_{e,f}=\mathbf1_{\{f=\bar e\}},
+\]
+where $\mathbf1_{\{\cdot\}}$ is the indicator of the stated condition.
+Directly from these definitions and the fact that every degree is $3$,
+\[
+  B=H^{\mathsf T}S-J,
+  \qquad SH^{\mathsf T}=A,
+  \qquad SJH^{\mathsf T}=3I_n,
+  \qquad J^2=I_{2m}.
+\]
+Since $J$ exchanges the two orientations of each edge, for $z\ne\pm1$
+we have
+\[
+  \det(zI_{2m}+J)=(z^2-1)^m,
+  \qquad
+  (zI_{2m}+J)^{-1}=\frac{zI_{2m}-J}{z^2-1}.
+\]
+For an invertible square matrix $M$ and compatible rectangular
+matrices $U,V$, the determinant formula
+\[
+  \det(M-UV)=\det(M)\det(I-VM^{-1}U)
+\]
+follows by eliminating either off-diagonal block in
+$\begin{pmatrix}M&U\\V&I\end{pmatrix}$.
+Applying it with $M=zI_{2m}+J$, $U=H^{\mathsf T}$ and $V=S$ yields
+\begin{align*}
+  \det(zI_{2m}-B)
+  &=\det\bigl(zI_{2m}+J-H^{\mathsf T}S\bigr)\\
+  &=(z^2-1)^m
+    \det\!\left(I_n-S(zI_{2m}+J)^{-1}H^{\mathsf T}\right)\\
+  &=(z^2-1)^m
+    \det\!\left(I_n-\frac{zA-3I_n}{z^2-1}\right)\\
+  &=(z^2-1)^{m-n}\det\bigl(z^2I_n-zA+2I_n\bigr).
+\end{align*}
+Since $m-n=n/2\ge0$, both sides are polynomials in $z$; equality for
+$z\ne\pm1$ therefore proves \eqref{eq:bass} for every $z$.
+No connectedness assumption has been used.
+
+Let $\lambda_1,\ldots,\lambda_n$ be the real eigenvalues of the
+symmetric matrix $A$, counted with multiplicity. Because
+$A\mathbf1=3\mathbf1$, take $\lambda_1=3$; this remains valid for a
+disconnected graph. Formula \eqref{eq:bass} shows that the eigenvalues
+of $B$, with algebraic multiplicity, consist of the roots
+$\mu_{i,+},\mu_{i,-}$ of
+\[
+  \mu^2-\lambda_i\mu+2=0
+  \qquad(1\le i\le n),
+\]
+together with $m-n$ additional copies of each of $1$ and $-1$.
+For any square matrix, triangularization over $\mathbb C$ shows that
+the trace of its $\ell$th power is the sum of the $\ell$th powers of
+its eigenvalues, with algebraic multiplicity. In particular, this
+assertion does not require $B$ to be diagonalizable.
+
+The roots associated with $\lambda_1=3$ are $2$ and $1$.
+If $|\lambda_i|\ge2\sqrt2$, its two roots are real, and their
+$\ell$th powers are nonnegative because $\ell$ is even. If
+$|\lambda_i|<2\sqrt2$, the roots are complex conjugates with modulus
+$\sqrt2$, so
+\[
+  \mu_{i,+}^{\,\ell}+\mu_{i,-}^{\,\ell}
+  =2\operatorname{Re}\!\left(\mu_{i,+}^{\,\ell}\right)
+  \ge-2\,2^{\ell/2}.
+\]
+The additional eigenvalues $1$ and $-1$ also contribute
+nonnegatively. Keeping the contribution $2^\ell$ from the first pair
+and bounding each remaining pair from below gives
+\begin{equation}\label{eq:trace-spectral}
+  T_\ell\ge 2^\ell-2(n-1)2^{\ell/2}
+  >2^\ell-2n\,2^{\ell/2}.
+\end{equation}
+Since $\ell\ge2\log_2 n+4$, we have $2^{\ell/2}\ge4n$, whence
+\[
+  2n\,2^{\ell/2}\le2^{\ell-1}.
+\]
+Consequently,
+\begin{equation}\label{eq:trace-lower}
+  T_\ell>2^{\ell-1}.
+\end{equation}
+
+\medskip
+\noindent\textbf{2. Bounding internally nonbacktracking returns.}
+For a vertex $v$ and an integer $r\ge1$, let $f_r(v)$ count the
+ordered vertex sequences
+\[
+  (y_0,y_1,\ldots,y_r),
+  \qquad y_0=y_r=v,
+\]
+whose consecutive vertices are adjacent and which satisfy
+\[
+  y_{j-1}\ne y_{j+1}\qquad(1\le j\le r-1).
+\]
+These are \emph{internally nonbacktracking returns}; no condition is
+imposed between the last edge and the first edge. We claim that
+\begin{equation}\label{eq:return-bound}
+  f_r(v)=0\quad(1\le r<g),
+  \qquad
+  f_r(v)\le\frac32\,2^{r-h}\quad(r\ge g).
+\end{equation}
+
+Indeed, every internally nonbacktracking walk that repeats a vertex
+contains a simple cycle. To see this, choose the smallest index $j$
+at which a vertex repeats, and let $i<j$ be its earlier occurrence.
+All vertices preceding index $j$ are distinct. Hence the segment
+from index $i$ to index $j$ has distinct vertices apart from its
+identical endpoints. Its length is neither $1$, which would be a
+loop, nor $2$, which would be an immediate reversal. It is therefore
+a simple cycle. It follows that every internally nonbacktracking
+walk of length less than $g$ is a simple path, and in particular no
+positive-length return of length less than $g$ exists.
+This proves the first assertion in \eqref{eq:return-bound}.
+
+For $r\ge g$, split each return counted by $f_r(v)$ into a prefix of
+length $r-h$ and a suffix of length $h$. There are exactly
+\[
+  3\cdot2^{r-h-1}
+\]
+internally nonbacktracking walks of length $r-h$ starting at $v$:
+there are three choices at the first step and two at each later
+step. Here $r-h\ge1$ by \eqref{eq:h}.
+Fix such a prefix and let its endpoint be $w$.
+Every admissible suffix is a simple path from $w$ to $v$, since
+$h<g$. If $w=v$, no such positive-length simple path exists.
+If $w\ne v$, there is at most one such path of length $h$:
+the union of two distinct simple paths between the same endpoints
+contains a cycle and has at most $2h<g$ edges, contradicting the
+girth. Any nonbacktracking requirement at the prefix--suffix join
+can only remove possibilities. Each prefix thus has at most one
+admissible suffix, proving
+\[
+  f_r(v)\le3\cdot2^{r-h-1}
+  =\frac32\,2^{r-h}.
+\]
+
+\medskip
+\noindent\textbf{3. Bounding the nonsimple strictly nonbacktracking walks.}
+Let $D_\ell$ count the walks in $T_\ell$ for which a vertex repeats
+among $x_0,\ldots,x_{\ell-1}$. Let $c_\ell$ be the number of simple
+cycles of length $\ell$, identified under cyclic rotation and
+reversal. Every such cycle has exactly $\ell$ distinct choices of
+starting vertex and two choices of direction. Thus
+\begin{equation}\label{eq:cycle-count}
+  T_\ell=2\ell\,c_\ell+D_\ell.
+\end{equation}
+
+Consider a walk counted by $D_\ell$. Choose indices
+$0\le i<j\le\ell-1$ with $x_i=x_j$, and extend its vertex sequence
+periodically by $x_{k+\ell}=x_k$ for all integers $k$.
+Set $v=x_i$ and $r=j-i$.
+The two segments
+\[
+  R_1=(x_i,x_{i+1},\ldots,x_j),
+  \qquad
+  R_2=(x_j,x_{j+1},\ldots,x_{i+\ell})
+\]
+are returns to $v$ of positive lengths $r$ and $\ell-r$.
+Both are internally nonbacktracking: every internal consecutive
+edge pair is a consecutive pair in the original cyclic walk.
+In particular, the original last--first pair remains nonbacktracking
+when it lies inside $R_2$. By \eqref{eq:return-bound},
+\begin{equation}\label{eq:split-range}
+  g\le r\le\ell-g.
+\end{equation}
+The artificial closing pair of either return may reverse, which is
+permitted by the definition of $f_r(v)$.
+
+For each fixed $v$ and $r$, there are at most
+$f_r(v)f_{\ell-r}(v)$ ordered pairs $(R_1,R_2)$.
+A pair determines a concatenated closed vertex sequence.
+Placing its starting point at one of the $\ell$ edge positions
+produces at most $\ell$ rooted oriented sequences, and every walk
+counted by $D_\ell$ is produced by some such pair and position.
+The orientation is already specified by the ordered returns, so
+there is no additional factor of two. Some concatenations have
+inadmissible joins, and some walks have multiple representations;
+retaining all of them can only enlarge this upper bound. For a
+periodic walk, different starting positions can give the same
+sequence, which is why the number of resulting sequences is
+\emph{at most} $\ell$.
+Consequently,
+\begin{align}
+  D_\ell
+  &\le\ell\sum_{r=g}^{\ell-g}\sum_{v\in V}
+       f_r(v)f_{\ell-r}(v)\notag\\
+  &\le\ell\cdot\ell\cdot n\cdot\frac94\,2^{\ell-2h}
+   =\frac94\,n\ell^2\,2^{\ell-2h}.
+  \label{eq:nonsimple-bound}
+\end{align}
+If $\ell<2g$, \eqref{eq:split-range} is impossible, so $D_\ell=0$
+and the sum is empty. Otherwise there are at most $\ell$ possible
+integer values of $r$, and \eqref{eq:return-bound} bounds each
+product in the sum by
+\[
+  \left(\frac32\,2^{r-h}\right)
+  \left(\frac32\,2^{\ell-r-h}\right)
+  =\frac94\,2^{\ell-2h}.
+\]
+Thus \eqref{eq:nonsimple-bound} holds in all cases.
+
+\medskip
+\noindent\textbf{4. Extracting a simple cycle.}
+Combining \eqref{eq:trace-lower}, \eqref{eq:cycle-count} and
+\eqref{eq:nonsimple-bound}, we obtain
+\begin{align*}
+  2\ell\,c_\ell
+  &=T_\ell-D_\ell\\
+  &>2^{\ell-1}-\frac94\,n\ell^2\,2^{\ell-2h}\\
+  &=2^{\ell-1}\left(1-\frac{9n\ell^2}{2^{2h+1}}\right)
+  >0.
+\end{align*}
+The last inequality is exactly the second hypothesis in
+\eqref{eq:hypotheses}. Hence $c_\ell>0$, and $G$ contains a simple
+cycle of length $\ell$.
+Since $\ell$ was an arbitrary even integer satisfying
+\eqref{eq:hypotheses}, this proves the asserted conclusion for every
+such length. Finally, for $\ell>0$,
+\[
+  2^{2h}>\frac92\,n\ell^2
+  \quad\Longleftrightarrow\quad
+  \ell<\frac{\sqrt2}{3}\,\frac{2^h}{\sqrt n},
+\]
+which gives the equivalent interval formulation \eqref{eq:interval}.
+\end{proof}
+
+\bigskip
+\begin{corollary}[The original girth condition]\label{cor:power-two}
+Every finite simple cubic graph on $n\ge64$ vertices with girth
+\[
+  g\ge\log_2 n+2\log_2\!\bigl(\log_2 n\bigr)+9
+\]
+contains a simple cycle of every even length $\ell$ satisfying
+\begin{equation}\label{eq:cor-interval}
+  2\log_2 n+4\le\ell<\frac{16}{3}\log_2 n.
+\end{equation}
+In particular, it contains a cycle whose length is a power of two.
+\end{corollary}
+
+\begin{proof}
+Put $t:=\log_2 n\ge6$ and
+$h:=\lfloor(g-1)/2\rfloor$. The girth assumption and $2h\ge g-2$
+give
+\begin{equation}\label{eq:cor-girth}
+  2^{2h}\ge2^{g-2}
+  \ge2^{\,t+2\log_2 t+7}
+  =128nt^2.
+\end{equation}
+For every even integer $\ell$ with $2t+4\le\ell<(16/3)t$,
+\[
+  \frac92\,n\ell^2
+  <\frac92\,n\left(\frac{16}{3}t\right)^2
+  =128nt^2
+  \le2^{2h}.
+\]
+Both conditions of Theorem~\ref{thm:main} therefore hold, proving
+\eqref{eq:cor-interval}.
+
+To obtain a power-of-two length, let
+\[
+  q:=2^{\left\lceil\log_2(2t+4)\right\rceil},
+\]
+the least power of two not smaller than $2t+4$. Since
+$u\le\lceil u\rceil<u+1$ for every real $u$,
+\[
+  2t+4\le q<4t+8\le\frac{16}{3}t,
+\]
+where the final inequality is equivalent to $t\ge6$.
+Also $q\ge2t+4\ge16$, so $q$ is even.
+Thus $q$ belongs to the interval in \eqref{eq:cor-interval}, and the
+first part of the corollary supplies a simple cycle of length $q$.
+\end{proof}
+
+\end{document}
