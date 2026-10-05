@@ -1,0 +1,733 @@
+% Compile twice with: pdflatex cubic_girth_even_cycle_interval.tex
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{
+  pdftitle={A cubic girth bound for even cycle intervals},
+  pdfsubject={An interval of even cycle lengths in cubic graphs of large girth},
+  pdfauthor={},
+  pdfkeywords={cubic graph, girth, even cycle lengths, nonbacktracking walks}
+}
+
+\newtheorem*{theorem}{Theorem}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\Ic}{\mathcal I_c}
+\newcommand{\Is}{\mathcal I_*}
+\newcommand{\proofstep}[1]{%
+  \par\addvspace{1.0\baselineskip}%
+  \noindent\textbf{#1}\par\nobreak\smallskip\noindent\ignorespaces}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0.22em plus 0.05em minus 0.04em}
+\setlength{\emergencystretch}{1.5em}
+\allowdisplaybreaks[2]
+\widowpenalty=10000
+\clubpenalty=10000
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries A cubic girth bound for even cycle intervals}
+\end{center}
+\vspace{0.4\baselineskip}
+
+A graph is \emph{cubic} if every vertex has degree three. Its \emph{girth}
+is the length of its shortest simple cycle. All logarithms denoted by
+$\log_2$ are to base two.
+
+\begin{theorem}
+Let $G$ be a finite simple cubic graph on $n\ge2^{64}$ vertices, and let
+$g$ be its girth. Suppose that
+\begin{equation}\label{eq:hypothesis}
+ g\ge
+ \left\lceil
+ 4\log_2(\log_2 n)
+ +4\log_2\bigl(\log_2(\log_2 n)\bigr)+22
+ \right\rceil.
+\end{equation}
+Set
+\begin{equation}\label{eq:main-parameters}
+ t=\log_2 n,\qquad
+ \ell=\log_2 t,\qquad
+ H=2\ell+2\log_2\ell+10.
+\end{equation}
+Then, for every even integer $q$ satisfying
+\begin{equation}\label{eq:q-range}
+ tH\le q\le2tH,
+\end{equation}
+the graph $G$ contains a simple cycle of length exactly $q$.
+\end{theorem}
+
+\begin{proof}
+Fix an even integer $q$ satisfying~\eqref{eq:q-range}.
+Write $V=V(G)$, let $A$ be the adjacency matrix of $G$, and put
+$m=|E(G)|=3n/2$. A finite graph of minimum degree at least two contains
+a cycle, so $g$ is finite.
+
+\proofstep{1. Walk counts, the girth moment, and repeated vertices}
+A walk $(v_0,v_1,\ldots,v_r)$ is \emph{internally nonbacktracking} if
+$v_{j-1}\ne v_{j+1}$ for $1\le j\le r-1$. If $v_r=v_0$, this definition
+places no restriction at the closing junction: it may happen that
+$v_{r-1}=v_1$. Let $f_r(v)$ be the number of these length-$r$ return walks
+based at $v$.
+
+Let $M_r(u,v)$ count internally nonbacktracking walks of length $r$ from
+$u$ to $v$. Then
+\[
+ M_1=A,\qquad M_2=A^2-3I,
+ \qquad M_r=M_{r-1}A-2M_{r-2}\quad(r\ge3).
+\]
+Indeed, $M_{r-1}A$ counts extensions by one edge. An extension backtracks
+at its last step precisely when it appends the two-edge segment $w,z,w$
+to a length-$(r-2)$ walk ending at $w$. For $r\ge3$ that shorter walk has a last edge, and
+there are exactly two choices of $z$ other than its preceding vertex.
+For $r=2$, the three immediate returns are subtracted instead.
+Consequently $M_r=P_r(A)$, where
+\begin{equation}\label{eq:polynomials}
+ \begin{gathered}
+ P_1(x)=x,\qquad P_2(x)=x^2-3,\\
+ P_r(x)=xP_{r-1}(x)-2P_{r-2}(x)\qquad(r\ge3).
+ \end{gathered}
+\end{equation}
+In particular,
+\begin{equation}\label{eq:fr}
+ f_r(v)=\bigl(P_r(A)\bigr)_{vv}\ge0.
+\end{equation}
+
+Put
+\begin{equation}\label{eq:h}
+ h=\left\lfloor\frac{g-1}{2}\right\rfloor,
+ \qquad\text{so that }h\ge1\text{ and }2h<g.
+\end{equation}
+Every internally nonbacktracking walk of length $h$ is simple. To see
+this, take two occurrences of a repeated vertex with the smallest
+positive separation. The intervening segment is a simple cycle:
+its length cannot be one because $G$ has no loops, or two because the
+walk does not backtrack. Such a cycle would have length at most $h<g$.
+Moreover, two distinct simple paths of length $h$ with the same
+endpoints have a cycle in their union, of length at most $2h<g$.
+Therefore there is at most one internally nonbacktracking walk of length
+$h$ between any ordered pair of vertices.
+
+For $r\ge g$, split a length-$r$ return walk at $v$ after $r-h$ steps.
+There are exactly $3\cdot2^{r-h-1}$ possible internally nonbacktracking
+prefixes, and for each prefix there is at most one length-$h$ suffix
+returning to $v$. Some such concatenations may be inadmissible; this
+only decreases the count. Thus
+\begin{equation}\label{eq:combinatorial-bound}
+ f_r(v)\le G_r:=\frac32\,2^{r-h}\qquad(r\ge g).
+\end{equation}
+The matrix $P_h(A)$ is symmetric, has entries in $\{0,1\}$, and has
+exactly $3\cdot2^{h-1}$ ones in each row, since this is the number of
+length-$h$ nonbacktracking walks starting at a given vertex. It follows
+that, at every vertex,
+\begin{equation}\label{eq:local-moment}
+ \bigl(P_h(A)^2\bigr)_{vv}
+ =\sum_{u\in V}\bigl(P_h(A)_{vu}\bigr)^2
+ =3\cdot2^{h-1}.
+\end{equation}
+
+Let $\vec E$ be the set of directed edges, and write $\overline e$ for
+the reverse of $e\in\vec E$. The nonbacktracking matrix $B$, indexed by
+$\vec E$, is defined by
+\[
+ B_{e,f}=
+ \begin{cases}
+ 1,&\text{if the head of $e$ is the tail of $f$ and }f\ne\overline e,\\
+ 0,&\text{otherwise.}
+ \end{cases}
+\]
+Thus $T_q:=\tr(B^q)$ counts ordered tuples
+$(e_0,\ldots,e_{q-1})$ satisfying the nonbacktracking transition rule
+also from $e_{q-1}$ to $e_0$. These are rooted, oriented, cyclically
+nonbacktracking closed walks: the starting directed edge is
+distinguished and is summed over all of $\vec E$.
+
+Write the corresponding vertex sequence as
+$(v_0,\ldots,v_{q-1},v_q)$, where $v_q=v_0$.
+Let $D_q$ count such tuples for which a vertex is repeated among
+$v_0,\ldots,v_{q-1}$; the mandatory equality $v_q=v_0$ is excluded from
+this definition. If $c_q$ is the number of undirected simple cycles of
+length $q$, then
+\begin{equation}\label{eq:simple-cycle-count}
+ T_q-D_q=2q\,c_q.
+\end{equation}
+Here a simple cycle has exactly $q$ choices of starting vertex and two
+orientations.
+
+Every walk counted by $D_q$ has two distinct numerical positions carrying
+the same vertex. Cutting at those positions produces two positive-length
+internally nonbacktracking return walks. Each such return walk contains
+a simple cycle, by the minimal-repetition argument above; hence each
+segment has length at least $g$. One of the two segments has length
+$r\le\lfloor q/2\rfloor$. Consequently the original cyclic word has a
+numerical position $p\in\{0,\ldots,q-1\}$ with $v_p=v_{p+r}$, where
+indices are taken modulo $q$ and $g\le r\le\lfloor q/2\rfloor$.
+
+For fixed $p,r$, and $v=v_p$, reading the two segments in the original
+orientation gives a pair counted by $f_r(v)f_{q-r}(v)$. The pair and the
+numerical position $p$ reconstruct the original rooted tuple, so this
+map is injective for fixed $p$ and $r$. Summing over possible marks
+therefore gives the upper bound
+\begin{equation}\label{eq:collision-count}
+ D_q\le
+ q\sum_{r=g}^{\lfloor q/2\rfloor}\sum_{v\in V}
+ f_r(v)f_{q-r}(v).
+\end{equation}
+Multiple admissible marks and inadmissible concatenations cause only
+overcounting. In particular, no division by a rotation orbit, and no
+assumption of aperiodicity, is involved. If the range of $r$ is empty,
+then $D_q=0$.
+
+\proofstep{2. The nonbacktracking determinant and polynomial bounds}
+We derive the determinant identity needed below. Let $U$ and $W$ be the
+$n\times2m$ tail and head incidence matrices, respectively, and let $J$
+be the $2m\times2m$ matrix reversing directed edges. Then
+\[
+ B=W^{\mathsf T}U-J,\qquad J^2=I,\qquad
+ UW^{\mathsf T}=A,\qquad UJW^{\mathsf T}=3I.
+\]
+Each undirected edge gives a two-by-two block of $J$, so
+$\det(I+uJ)=(1-u^2)^m$. For $u\ne\pm1$, the identity
+$(I+uJ)^{-1}=(I-uJ)/(1-u^2)$ and the rectangular determinant identity
+$\det(I+XY)=\det(I+YX)$ give
+\begin{align}
+ \det(I-uB)
+ &=\det(I+uJ)\,
+   \det\!\left(I-uU(I+uJ)^{-1}W^{\mathsf T}\right)\notag\\
+ &=(1-u^2)^m
+   \det\!\left(I-\frac{u}{1-u^2}(A-3uI)\right)\notag\\
+ &=(1-u^2)^{m-n}\det(I-uA+2u^2I).
+ \label{eq:bass}
+\end{align}
+The rectangular determinant identity itself follows by evaluating
+$\det\bigl(\begin{smallmatrix}I&X\\-Y&I\end{smallmatrix}\bigr)$ using
+either diagonal block. Since both sides of~\eqref{eq:bass} are
+polynomials in $u$, the identity holds for all $u$.
+
+Let $\lambda_1,\ldots,\lambda_n$ be the adjacency eigenvalues, with
+multiplicity. The matrix $A$ is real symmetric, $A\ind=3\ind$, and all
+its eigenvalues lie in $[-3,3]$. The last assertion follows, for example,
+by applying an eigenvector equation at a coordinate of maximum absolute
+value. Equation~\eqref{eq:bass} gives
+\begin{equation}\label{eq:characteristic}
+ \det(zI-B)
+ =(z^2-1)^{m-n}\prod_{i=1}^n(z^2-\lambda_i z+2).
+\end{equation}
+For $|\lambda_i|>2\sqrt2$, define
+\begin{equation}\label{eq:real-roots}
+ \beta_i=\frac{|\lambda_i|+\sqrt{\lambda_i^2-8}}2,
+ \qquad \gamma_i=\frac2{\beta_i}.
+\end{equation}
+Then $\sqrt2<\beta_i\le2$. The two roots associated with $\lambda_i$
+are $\beta_i,\gamma_i$ when $\lambda_i>0$, and
+$-\beta_i,-\gamma_i$ when $\lambda_i<0$.
+For $|\lambda_i|\le2\sqrt2$, both roots have absolute value $\sqrt2$,
+including the repeated-root cases.
+
+Choose, for now, any two cutoffs satisfying
+\begin{equation}\label{eq:cutoffs}
+ \sqrt2<\beta_c<\beta_*<2,
+ \qquad C=\frac{\beta_c^2-1}{\beta_c^2-2}.
+\end{equation}
+We next prove the following estimates for every integer $r\ge1$
+and every real $\lambda$ in the indicated intervals:
+\begin{align}
+ |P_r(\lambda_i)|&\le C\beta_i^r
+ &&\text{if }|\lambda_i|>2\sqrt2\text{ and }\beta_i>\beta_c,
+ \label{eq:poly-high}\\
+ |P_r(\lambda)|&\le Cb^r
+ &&\text{if }|\lambda|\le b+2/b,
+ \quad b\in\{\beta_c,\beta_*\},
+ \label{eq:poly-low}\\
+ |P_r(\lambda_i)|&\ge\frac32\,\beta_i^r
+ &&\text{if }|\lambda_i|>2\sqrt2.
+ \label{eq:poly-lower}
+\end{align}
+
+For $\lambda=\beta+2/\beta$ with $\sqrt2<\beta\le2$, solving
+\eqref{eq:polynomials} gives
+\begin{equation}\label{eq:poly-root-formula}
+ P_r(\lambda)=a_\beta\beta^r-b_\beta(2/\beta)^r,
+ \qquad
+ a_\beta=\frac{\beta^2-1}{\beta^2-2},\quad
+ b_\beta=\frac{4-\beta^2}{2(\beta^2-2)}.
+\end{equation}
+This formula is verified at $r=1,2$, and both sides satisfy the same
+recurrence for $r\ge3$. Here $b_\beta\ge0$,
+$a_\beta-b_\beta=3/2$, and
+\[
+ \frac{d}{d\beta}a_\beta
+ =-\frac{2\beta}{(\beta^2-2)^2}<0.
+\]
+Since $2/\beta\le\beta$, it follows that
+\begin{equation}\label{eq:poly-sandwich}
+ \frac32\,\beta^r
+ \le P_r(\beta+2/\beta)
+ \le a_\beta\beta^r.
+\end{equation}
+Also $P_r(-x)=(-1)^rP_r(x)$ by~\eqref{eq:polynomials}.
+These observations prove~\eqref{eq:poly-high}
+and~\eqref{eq:poly-lower}.
+
+To include the whole low spectral interval, the same recurrence gives,
+for real or complex $\theta$,
+\begin{equation}\label{eq:trigonometric}
+ P_r(2\sqrt2\cos\theta)
+ =2^{r/2}\left(
+ e^{ir\theta}+e^{-ir\theta}
+ +\frac12\sum_{j=1}^{r-1}e^{i(r-2j)\theta}
+ \right),
+\end{equation}
+with the sum empty when $r=1$. This identity follows by checking
+$r=1,2$ and the recurrence. If $\theta$ is real, the absolute value of
+the right-hand side is at most its value at $\theta=0$, namely
+$2^{r/2}(r+3)/2$. If $\theta=iu$ with $u\ge0$, pair opposite
+exponents in~\eqref{eq:trigonometric}. The result is a positive linear
+combination of functions $\cosh(ku)$ with nonnegative integers $k$,
+and hence is nondecreasing in $u$. Since
+\[
+ b+2/b=2\sqrt2\cosh\!\left(\ln(b/\sqrt2)\right)
+ \qquad(b>\sqrt2),
+\]
+parity and the two preceding bounds imply
+\[
+ |P_r(\lambda)|\le P_r(b+2/b)\le a_b b^r
+ \qquad\text{whenever }|\lambda|\le b+2/b.
+\]
+For $b=\beta_c$ we have $a_b=C$, and for $b=\beta_*$ we have $a_b<C$.
+This proves~\eqref{eq:poly-low}, including the endpoints
+$\lambda=\pm2\sqrt2$.
+
+Take a real orthonormal eigenbasis $\phi_1,\ldots,\phi_n$ of $A$, and set
+\begin{equation}\label{eq:weights}
+ w_i(v)=\phi_i(v)^2,
+ \qquad
+ \sum_{i=1}^n w_i(v)=1,
+ \qquad
+ \sum_{v\in V}w_i(v)=1.
+\end{equation}
+Define the index sets
+\[
+ \Ic=\{i:|\lambda_i|>2\sqrt2,\ \beta_i>\beta_c\},
+ \qquad
+ \Is=\{i:|\lambda_i|>2\sqrt2,\ \beta_i>\beta_*\},
+\]
+so that $\Is\subseteq\Ic$, and write
+\begin{equation}\label{eq:high-sums}
+ H_r(v)=\sum_{i\in\Ic}w_i(v)\beta_i^r,
+ \qquad
+ H_r^*(v)=\sum_{i\in\Is}w_i(v)\beta_i^r,
+ \qquad
+ S_q^*=\sum_{i\in\Is}\beta_i^q.
+\end{equation}
+The function $b\mapsto b+2/b$ is increasing for $b>\sqrt2$.
+Thus~\eqref{eq:fr}, the spectral decomposition of $P_r(A)$, and
+\eqref{eq:poly-high}--\eqref{eq:poly-low} imply
+\begin{equation}\label{eq:fr-spectral}
+ f_r(v)\le CH_r(v)+C\beta_c^r,
+ \qquad
+ f_r(v)\le CH_r^*(v)+C\beta_*^r.
+\end{equation}
+For $r\ge g$, put
+\begin{equation}\label{eq:L}
+ L_r=\min\{G_r,C\beta_c^r\}.
+\end{equation}
+Combining the first inequality in~\eqref{eq:fr-spectral} with
+\eqref{eq:combinatorial-bound} gives
+\begin{equation}\label{eq:fr-mixed}
+ f_r(v)\le CH_r(v)+L_r\qquad(r\ge g).
+\end{equation}
+Indeed, for nonnegative $a,b,c$, one has
+$\min\{c,a+b\}\le a+\min\{c,b\}$.
+
+\proofstep{3. A local correlation estimate and lower bounds for the trace}
+By~\eqref{eq:poly-lower}, \eqref{eq:local-moment}, and the spectral
+decomposition,
+\begin{align}
+ m_h(v)&:=\sum_{i\in\Ic}w_i(v)\beta_i^{2h}\notag\\
+ &\le\frac49\sum_{i=1}^n w_i(v)P_h(\lambda_i)^2
+ =\frac49\bigl(P_h(A)^2\bigr)_{vv}
+ =\frac23\,2^h.
+ \label{eq:weighted-moment}
+\end{align}
+We claim that, whenever $r+s=q$ and $r,s\ge g$,
+\begin{equation}\label{eq:correlation}
+ \sum_{v\in V}H_r(v)H_s^*(v)
+ \le\frac23\left(\frac2{\beta_*^2}\right)^h S_q^*.
+\end{equation}
+
+Fix a vertex $v$. On the index set $\Ic$, set
+\[
+ t_i=w_i(v)\beta_i^{2h},\qquad
+ a_i=\beta_i^{r-2h},\qquad
+ b_i=\beta_i^{s-2h}\ind_{\{\beta_i>\beta_*\}}.
+\]
+Since $r,s\ge g>2h$, the quantities $a_i$ and $b_i$ are nondecreasing
+functions of $\beta_i$. The jump in the latter function at $\beta_*$
+is upward. Therefore
+\begin{align*}
+ &\left(\sum_{i\in\Ic}t_i\right)
+  \left(\sum_{i\in\Ic}t_i a_i b_i\right)
+ -\left(\sum_{i\in\Ic}t_i a_i\right)
+  \left(\sum_{i\in\Ic}t_i b_i\right)\\
+ &\hspace{1cm}
+ =\frac12\sum_{i,j\in\Ic}t_it_j(a_i-a_j)(b_i-b_j)
+ \ge0.
+\end{align*}
+There is no division by $\sum_i t_i$, so this also covers the case
+$m_h(v)=0$. Substituting the definitions gives
+\[
+ H_r(v)H_s^*(v)
+ \le m_h(v)\sum_{i\in\Is}w_i(v)\beta_i^{q-2h}.
+\]
+Summing over $v$ and using~\eqref{eq:weighted-moment}
+and~\eqref{eq:weights}, we obtain
+\begin{align*}
+ \sum_{v\in V}H_r(v)H_s^*(v)
+ &\le\frac23\,2^h\sum_{i\in\Is}\beta_i^{q-2h}\\
+ &\le\frac23\,2^h\beta_*^{-2h}
+       \sum_{i\in\Is}\beta_i^q,
+\end{align*}
+which is~\eqref{eq:correlation}.
+
+We next control $T_q$. The trace of a matrix power is the sum of the
+corresponding powers of its eigenvalues, counted with algebraic
+multiplicity. This follows by triangularizing the matrix over
+$\mathbb C$ and does not require diagonalizability.
+In~\eqref{eq:characteristic}, each of the $m-n$ additional roots $+1$
+and each of the $m-n$ additional roots $-1$ contributes $1$ to $T_q$,
+since $q$ is even. Their total contribution is $2(m-n)=n$.
+For $|\lambda_i|>2\sqrt2$, the associated pair contributes
+$\beta_i^q+\gamma_i^q\ge0$, and at least $\beta_i^q$ when $i\in\Is$.
+For $|\lambda_i|\le2\sqrt2$, the sum of the $q$th powers is real
+and at least $-2\cdot2^{q/2}$, by the triangle inequality.
+Finally, the adjacency eigenvalue $3$ provides a root $2$, which is
+included in $S_q^*$ because $\beta_*<2$. Consequently
+\begin{equation}\label{eq:trace-bounds}
+ T_q\ge S_q^*-2n2^{q/2},\qquad
+ S_q^*\ge2^q,\qquad
+ T_q\ge2^q-2n2^{q/2}.
+\end{equation}
+Put
+\begin{equation}\label{eq:eta}
+ \eta_q=2n2^{-q/2}.
+\end{equation}
+Whenever $\eta_q<1$, we have
+\begin{equation}\label{eq:trace-ratios}
+ T_q\ge(1-\eta_q)2^q>0,
+ \qquad
+ \frac{S_q^*}{T_q}
+ \le 1+\frac{\eta_q2^q}{T_q}
+ \le\frac1{1-\eta_q}.
+\end{equation}
+
+\proofstep{4. A finite sufficient condition for a simple cycle}
+Define the convergent series
+\begin{equation}\label{eq:W}
+ \begin{split}
+ W_g
+ &:=\sum_{r=g}^{\infty}L_r\beta_*^{-r}\\
+ &=\sum_{r=g}^{\infty}
+ \min\!\left\{
+ \frac32\,2^{-h}\left(\frac2{\beta_*}\right)^r,
+ C\left(\frac{\beta_c}{\beta_*}\right)^r
+ \right\}.
+ \end{split}
+\end{equation}
+Convergence follows from $\beta_c/\beta_*<1$ by bounding the minimum by
+its second entry. We will show that, provided $\eta_q<1$, it suffices to
+verify
+\begin{equation}\label{eq:certificate}
+ \frac{C^2}{3}\,q^2\left(\frac2{\beta_*^2}\right)^h
+ +CqW_g
+ +\frac{3C}{4}\,nq^2 2^{-h}
+       \left(\frac{\beta_*}{2}\right)^{q/2}
+ <1-\eta_q.
+\end{equation}
+
+For a split length $g\le r\le\lfloor q/2\rfloor$, put $s=q-r$.
+Since $f_r(v)\ge0$, the second bound in~\eqref{eq:fr-spectral} first
+implies
+\[
+ f_r(v)f_s(v)
+ \le C f_r(v)H_s^*(v)+C f_r(v)\beta_*^s.
+\]
+Use~\eqref{eq:fr-mixed} on the first term and
+\eqref{eq:combinatorial-bound} on the second. This gives
+\begin{equation}\label{eq:product-bound}
+ f_r(v)f_s(v)
+ \le C^2H_r(v)H_s^*(v)
+    +CL_rH_s^*(v)+CG_r\beta_*^s.
+\end{equation}
+The first term is controlled after summing over $v$ by
+\eqref{eq:correlation}. For the second, \eqref{eq:weights} gives
+\begin{equation}\label{eq:second-term}
+ L_r\sum_{v\in V}H_s^*(v)
+ =L_r\sum_{i\in\Is}\beta_i^{q-r}
+ \le L_r\beta_*^{-r}S_q^*.
+\end{equation}
+For the third, $s\ge q/2$ and $0<\beta_*/2<1$ imply
+\begin{equation}\label{eq:third-term}
+ G_r\beta_*^s
+ =\frac32\,2^{q-h}\left(\frac{\beta_*}{2}\right)^s
+ \le\frac32\,2^{q-h}\left(\frac{\beta_*}{2}\right)^{q/2}.
+\end{equation}
+There are at most $q/2$ split lengths. Substituting
+\eqref{eq:product-bound}--\eqref{eq:third-term} into
+\eqref{eq:collision-count}, and extending the middle sum to the series
+\eqref{eq:W}, yields
+\begin{equation}\label{eq:D-final}
+ \begin{split}
+ D_q\le{}&
+ \left[\frac{C^2}{3}\,q^2
+              \left(\frac2{\beta_*^2}\right)^h+CqW_g\right]S_q^*\\
+ &+\frac{3C}{4}\,nq^2 2^{q-h}
+                 \left(\frac{\beta_*}{2}\right)^{q/2}.
+ \end{split}
+\end{equation}
+Indeed, the coefficients of the first and last terms are, respectively,
+$q(q/2)C^2(2/3)=C^2q^2/3$ and
+$q(q/2)C(3/2)=3Cq^2/4$.
+Divide~\eqref{eq:D-final} by $T_q>0$ and use~\eqref{eq:trace-ratios}.
+The result is
+\begin{equation}\label{eq:collision-ratio}
+ \frac{D_q}{T_q}
+ \le\frac{1}{1-\eta_q}
+ \left[
+ \frac{C^2}{3}\,q^2\left(\frac2{\beta_*^2}\right)^h
+ +CqW_g
+ +\frac{3C}{4}\,nq^2 2^{-h}
+          \left(\frac{\beta_*}{2}\right)^{q/2}
+ \right].
+\end{equation}
+Thus~\eqref{eq:certificate} implies $D_q<T_q$, and
+\eqref{eq:simple-cycle-count} then gives $c_q>0$.
+
+\proofstep{5. Adaptive parameters and exact verification of the certificate}
+Since $n\ge2^{64}$,
+$t\ge64$ and $\ell\ge6$. Moreover,
+\[
+ 4\log_2(\log_2 n)
+ +4\log_2\bigl(\log_2(\log_2 n)\bigr)+22
+ =2H+2.
+\]
+For even $g$, we have $h=(g-2)/2$, and for odd $g$, we have
+$h=(g-1)/2$. In either case $h\ge(g-2)/2$, and hence
+\begin{equation}\label{eq:h-lower}
+ h\ge\frac{g-2}{2}\ge H.
+\end{equation}
+Also $6^2>2^5$, so $\log_2 6>5/2$, and consequently
+\begin{equation}\label{eq:H-lower}
+ H\ge22+2\log_2 6>27.
+\end{equation}
+
+Choose
+\begin{equation}\label{eq:adaptive}
+ \begin{gathered}
+ \beta_c=2^{3/4},\qquad
+ C=\frac{3+\sqrt2}{2}<\frac94,\\
+ x=\frac{q}{tH}\in[1,2],\qquad
+ \delta=\frac{2t}{q}=\frac2{xH},\qquad
+ \beta_*=2^{1-\delta}.
+ \end{gathered}
+\end{equation}
+The bound on $C$ follows from $\sqrt2<3/2$.
+Equations~\eqref{eq:H-lower} and~\eqref{eq:adaptive} give
+$0<\delta\le2/H<2/27<1/12$, so the cutoff ordering
+\eqref{eq:cutoffs} holds. In addition,
+\begin{equation}\label{eq:exact-cancellation}
+ n\left(\frac{\beta_*}{2}\right)^{q/2}
+ =2^{t-\delta q/2}=1.
+\end{equation}
+
+\emph{Bounding the series $W_g$.}
+Let
+\[
+ d=\frac14-\delta>\frac16,
+ \qquad R=4h+3.
+\]
+Since $2/\beta_*=2^\delta$ and $\beta_c/\beta_*=2^{-d}$, use the first
+entry of the minimum in~\eqref{eq:W} for $0\le r<R$ and the second
+for $r\ge R$. Extending the starting range from $g$ to $0$ only adds
+nonnegative terms. Thus
+\begin{align}
+ W_g
+ &\le\frac32\,2^{-h}\sum_{r=0}^{R-1}2^{\delta r}
+       +C\sum_{r=R}^{\infty}2^{-dr}\notag\\
+ &=\frac32\,2^{-h}\frac{2^{\delta R}-1}{2^\delta-1}
+       +\frac{C2^{-dR}}{1-2^{-d}}\notag\\
+ &\le 2^{-(1-4\delta)h}
+ \left[
+ \frac{(3/2)2^{3\delta}}{2^\delta-1}
+ +\frac{C2^{-3d}}{1-2^{-d}}
+ \right].
+ \label{eq:W-geometric}
+\end{align}
+Here $4d=1-4\delta$ was used in the last line.
+
+For explicit bounds, strict convexity of $u\mapsto1/u$ gives
+\[
+ \ln2=\int_1^2\frac{du}{u}
+ >\int_1^2\left(\frac43-\frac49u\right)\,du
+ =\frac23.
+\]
+Also $(6/5)^4=1296/625>2$, so $2^{1/4}<6/5$.
+Using $2^a-1\ge a\ln2$ for $a>0$ (which follows from $e^y\ge1+y$),
+we obtain
+\begin{equation}\label{eq:W-first-constant}
+ \frac{(3/2)2^{3\delta}}{2^\delta-1}
+ <\frac{(3/2)(6/5)}{(2/3)\delta}
+ =\frac{27}{10\delta}.
+\end{equation}
+For the other term, retaining its numerator gives
+\begin{equation}\label{eq:W-second-constant}
+ \frac{C2^{-3d}}{1-2^{-d}}
+ =\frac{C2^{-2d}}{2^d-1}
+ <\frac{C}{d\ln2}
+ <\frac{9/4}{(1/6)(2/3)}
+ =\frac{81}{4}.
+\end{equation}
+Since $1-4\delta>0$, \eqref{eq:h-lower} allows $h$ to be replaced
+by $H$ in the decreasing exponential in~\eqref{eq:W-geometric}.
+Because $4\delta H=8/x$, the last three estimates yield
+\begin{equation}\label{eq:W-final}
+ W_g<
+ \left(\frac{27xH}{20}+\frac{81}{4}\right)2^{-H+8/x}.
+\end{equation}
+
+\emph{Reducing to two endpoints.}
+Denote the left-hand side of~\eqref{eq:certificate} by $\mathcal F$.
+Set
+\begin{equation}\label{eq:Z}
+ Z=t^2H^2 2^{-H}
+   =2^{-10}\left(\frac H\ell\right)^2,
+\end{equation}
+where the equality uses $t=2^\ell$ and
+$2^H=2^{10}t^2\ell^2$.
+Since $2/\beta_*^2=2^{-1+2\delta}<1$, equations
+\eqref{eq:h-lower}, \eqref{eq:adaptive},
+\eqref{eq:exact-cancellation}, and~\eqref{eq:W-final} give
+\begin{align*}
+ \frac{C^2}{3}\,q^2\left(\frac2{\beta_*^2}\right)^h
+ &<Z\,\frac{27}{16}x^2 2^{4/x},\\
+ CqW_g
+ &<Z\,\frac9{4t}
+      \left(\frac{27}{20}x^2+\frac{81}{4H}x\right)2^{8/x},\\
+ \frac{3C}{4}\,nq^2 2^{-h}
+       \left(\frac{\beta_*}{2}\right)^{q/2}
+ &<Z\,\frac{27}{16}x^2.
+\end{align*}
+In particular,
+\begin{equation}\label{eq:Phi}
+ \begin{split}
+ \mathcal F<\Phi(x):=Z\biggl[
+ &\frac{27}{16}x^2 2^{4/x}+\frac{27}{16}x^2\\
+ &+\frac9{4t}
+   \left(\frac{27}{20}x^2+\frac{81}{4H}x\right)2^{8/x}
+ \biggr].
+ \end{split}
+\end{equation}
+In analyzing $\Phi$, the quantities $t,H,Z$ are held fixed.
+For every $c>0$ and $x>0$,
+\begin{equation}\label{eq:convexity}
+ \begin{aligned}
+ \frac{d^2}{dx^2}\bigl(x^2e^{c/x}\bigr)
+ &=e^{c/x}\left[\left(\frac cx-1\right)^2+1\right]>0,\\
+ \frac{d^2}{dx^2}\bigl(xe^{c/x}\bigr)
+ &=\frac{c^2}{x^3}e^{c/x}>0.
+ \end{aligned}
+\end{equation}
+Thus $\Phi$ is convex: its terms are positive multiples of $x^2$,
+$x^2e^{c/x}$, or $xe^{c/x}$, with $c=4\ln2$ or $8\ln2$.
+It follows that, for $1\le x\le2$,
+\[
+ \Phi(x)\le(2-x)\Phi(1)+(x-1)\Phi(2)
+ \le\max\{\Phi(1),\Phi(2)\}.
+\]
+Direct substitution gives the two endpoint values
+\begin{equation}\label{eq:endpoints}
+ \begin{aligned}
+ E_1:=\Phi(1)
+ &=Z\left[\frac{459}{16}
+       +\frac{576}{t}\left(\frac{27}{20}+\frac{81}{4H}\right)\right],\\
+ E_2:=\Phi(2)
+ &=Z\left[\frac{135}{4}
+       +\frac{36}{t}\left(\frac{27}{5}+\frac{81}{2H}\right)\right].
+ \end{aligned}
+\end{equation}
+
+We now regard $t=2^\ell$ and $H=2\ell+2\log_2\ell+10$ as functions
+of the real variable $\ell\ge6$. Both $t$ and $H$ increase, whereas
+\begin{equation}\label{eq:monotone}
+ \frac{d}{d\ell}\left(\frac H\ell\right)
+ =\frac{2/\ln2-2\log_2\ell-10}{\ell^2}<0.
+\end{equation}
+For the strict inequality, use $2/\ln2<3$ and $\ell\ge6$.
+Hence $Z$ decreases, and each positive bracket
+in~\eqref{eq:endpoints} also decreases. Therefore both endpoint
+values are largest at $\ell=6$.
+
+At this endpoint, $t=64$ and
+\[
+ H_0:=H\big|_{\ell=6}=22+2\log_2 6.
+\]
+The exact comparison $6^5=7776<8192=2^{13}$ gives
+$\log_2 6<13/5$, so $H_0<136/5$.
+Using $Z=H_0^2/36864$ at $\ell=6$, equations~\eqref{eq:endpoints}
+reduce to
+\begin{align}
+ E_1\big|_{\ell=6}
+ &=\frac{(3267/80)H_0^2+(729/4)H_0}{36864}
+ <\frac{244239}{256000}<\frac{31}{32},
+ \label{eq:endpoint-one}\\
+ E_2\big|_{\ell=6}
+ &=\frac{(2943/80)H_0^2+(729/32)H_0}{36864}
+ <\frac{1546473}{2048000}<\frac{31}{32}.
+ \label{eq:endpoint-two}
+\end{align}
+The displayed rational upper bounds are obtained by replacing $H_0$
+with $136/5$ in the preceding expressions, whose coefficients are
+positive. The last comparisons can be checked without rounding:
+\[
+ \frac{31}{32}-\frac{244239}{256000}
+ =\frac{3761}{256000}>0,
+ \qquad
+ \frac{31}{32}-\frac{1546473}{2048000}
+ =\frac{437527}{2048000}>0.
+\]
+Consequently, for every $\ell\ge6$ and $x\in[1,2]$,
+\begin{equation}\label{eq:F-final}
+ \mathcal F<\Phi(x)\le\max\{E_1,E_2\}<\frac{31}{32}.
+\end{equation}
+
+Finally, \eqref{eq:q-range} and $H>27$ give
+\begin{equation}\label{eq:eta-final}
+ \eta_q=2n2^{-q/2}
+ \le2n^{1-H/2}
+ <2n^{-25/2}
+ \le2^{-799}
+ <\frac1{32}.
+\end{equation}
+In particular $\eta_q<1$, as required for~\eqref{eq:trace-ratios},
+and~\eqref{eq:F-final} implies
+\[
+ \mathcal F<\frac{31}{32}<1-\eta_q.
+\]
+This is precisely~\eqref{eq:certificate}. Thus
+\eqref{eq:collision-ratio} gives $D_q<T_q$, and
+\eqref{eq:simple-cycle-count} yields
+\[
+ c_q=\frac{T_q-D_q}{2q}>0.
+\]
+Since $q$ was arbitrary, $G$ contains a simple cycle of every even
+length in~\eqref{eq:q-range}.
+\end{proof}
+
+\end{document}
